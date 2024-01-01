@@ -1,7 +1,7 @@
 {
     "version":            "1",
     "project_name":       "blink",
-    "project_version":    "1",
+    "project_version":    "faa07b9-dirty",
     "project_path":       "C:/Users/bakra/Desktop/ESP32-C3-DEVKIT-C02/blink",
     "idf_path":           "C:/Users/bakra/esp/esp-idf",
     "build_dir":          "C:/Users/bakra/Desktop/ESP32-C3-DEVKIT-C02/blink/build",
