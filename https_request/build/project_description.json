@@ -1,7 +1,7 @@
 {
     "version":            "1",
     "project_name":       "https_request",
-    "project_version":    "4024c06",
+    "project_version":    "c6fcc2c-dirty",
     "project_path":       "C:/Users/bakra/Desktop/ESP32-C3-DEVKIT-C02/https_request",
     "idf_path":           "C:/Users/bakra/esp/esp-idf",
     "build_dir":          "C:/Users/bakra/Desktop/ESP32-C3-DEVKIT-C02/https_request/build",
