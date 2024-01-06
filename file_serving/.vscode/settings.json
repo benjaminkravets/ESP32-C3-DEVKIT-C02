@@ -5,5 +5,8 @@
     "board/esp32c3-builtin.cfg"
   ],
   "idf.portWin": "COM9",
-  "idf.flashType": "UART"
+  "idf.flashType": "UART",
+  "files.associations": {
+    "esp_http_server.h": "c"
+  }
 }

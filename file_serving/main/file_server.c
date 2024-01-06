@@ -26,6 +26,7 @@
 #include "esp_spiffs.h"
 #include "esp_http_server.h"
 
+
 /* Max length a file path can have on storage */
 #define FILE_PATH_MAX (ESP_VFS_PATH_MAX + CONFIG_SPIFFS_OBJ_NAME_LEN)
 
@@ -108,11 +109,12 @@ static esp_err_t http_resp_dir_html(httpd_req_t *req, const char *dirpath)
     httpd_resp_send_chunk(req, (const char *)upload_script_start, upload_script_size);
 
     /* Send file-list table definition and column labels */
+    /*
     httpd_resp_sendstr_chunk(req,
         "<table class=\"fixed\" border=\"1\">"
         "<col width=\"800px\" /><col width=\"300px\" /><col width=\"300px\" /><col width=\"100px\" />"
         "<thead><tr><th>Name</th><th>Type</th><th>Size (Bytes)</th><th>Delete</th></tr></thead>"
-        "<tbody>");
+        "<tbody>"); */
 
     /* Iterate over all files / folders and fetch their names and sizes */
     while ((entry = readdir(dir)) != NULL) {
@@ -300,6 +302,8 @@ static esp_err_t upload_post_handler(httpd_req_t *req)
     /* Note sizeof() counts NULL termination hence the -1 */
     const char *filename = get_path_from_uri(filepath, ((struct file_server_data *)req->user_ctx)->base_path,
                                              req->uri + sizeof("/upload") - 1, sizeof(filepath));
+
+    ESP_LOGI(TAG, "Here is the filename --- %s", filename);
     if (!filename) {
         /* Respond with 500 Internal Server Error */
         httpd_resp_send_err(req, HTTPD_500_INTERNAL_SERVER_ERROR, "Filename too long");

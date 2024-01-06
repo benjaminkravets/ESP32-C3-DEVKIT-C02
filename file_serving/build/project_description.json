@@ -1,7 +1,7 @@
 {
     "version":            "1",
     "project_name":       "file_server",
-    "project_version":    "c6fcc2c-dirty",
+    "project_version":    "61cccda-dirty",
     "project_path":       "C:/Users/bakra/Desktop/ESP32-C3-DEVKIT-C02/file_serving",
     "idf_path":           "C:/Users/bakra/esp/esp-idf",
     "build_dir":          "C:/Users/bakra/Desktop/ESP32-C3-DEVKIT-C02/file_serving/build",
