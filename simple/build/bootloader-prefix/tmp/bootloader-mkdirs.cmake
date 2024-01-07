@@ -4,7 +4,7 @@
 cmake_minimum_required(VERSION 3.5)
 
 file(MAKE_DIRECTORY
-  "C:/Users/bakra/esp/esp-idf/components/bootloader/subproject"
+  "C:/Espressif/frameworks/esp-idf-v5.1.2/components/bootloader/subproject"
   "C:/Users/bakra/Desktop/ESP32-C3-DEVKIT-C02/simple/build/bootloader"
   "C:/Users/bakra/Desktop/ESP32-C3-DEVKIT-C02/simple/build/bootloader-prefix"
   "C:/Users/bakra/Desktop/ESP32-C3-DEVKIT-C02/simple/build/bootloader-prefix/tmp"

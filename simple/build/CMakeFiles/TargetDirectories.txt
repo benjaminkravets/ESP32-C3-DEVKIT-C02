@@ -9,7 +9,7 @@ C:/Users/bakra/Desktop/ESP32-C3-DEVKIT-C02/simple/build/CMakeFiles/monitor.dir
 C:/Users/bakra/Desktop/ESP32-C3-DEVKIT-C02/simple/build/CMakeFiles/flash.dir
 C:/Users/bakra/Desktop/ESP32-C3-DEVKIT-C02/simple/build/CMakeFiles/encrypted-flash.dir
 C:/Users/bakra/Desktop/ESP32-C3-DEVKIT-C02/simple/build/CMakeFiles/_project_elf_src.dir
-C:/Users/bakra/Desktop/ESP32-C3-DEVKIT-C02/simple/build/CMakeFiles/https_server.elf.dir
+C:/Users/bakra/Desktop/ESP32-C3-DEVKIT-C02/simple/build/CMakeFiles/simple.elf.dir
 C:/Users/bakra/Desktop/ESP32-C3-DEVKIT-C02/simple/build/CMakeFiles/size.dir
 C:/Users/bakra/Desktop/ESP32-C3-DEVKIT-C02/simple/build/CMakeFiles/size-files.dir
 C:/Users/bakra/Desktop/ESP32-C3-DEVKIT-C02/simple/build/CMakeFiles/size-components.dir
@@ -481,7 +481,6 @@ C:/Users/bakra/Desktop/ESP32-C3-DEVKIT-C02/simple/build/esp-idf/esp_https_ota/CM
 C:/Users/bakra/Desktop/ESP32-C3-DEVKIT-C02/simple/build/esp-idf/esp_https_ota/CMakeFiles/install.dir
 C:/Users/bakra/Desktop/ESP32-C3-DEVKIT-C02/simple/build/esp-idf/esp_https_ota/CMakeFiles/install/local.dir
 C:/Users/bakra/Desktop/ESP32-C3-DEVKIT-C02/simple/build/esp-idf/esp_https_ota/CMakeFiles/install/strip.dir
-C:/Users/bakra/Desktop/ESP32-C3-DEVKIT-C02/simple/build/esp-idf/esp_https_server/CMakeFiles/__idf_esp_https_server.dir
 C:/Users/bakra/Desktop/ESP32-C3-DEVKIT-C02/simple/build/esp-idf/esp_https_server/CMakeFiles/edit_cache.dir
 C:/Users/bakra/Desktop/ESP32-C3-DEVKIT-C02/simple/build/esp-idf/esp_https_server/CMakeFiles/rebuild_cache.dir
 C:/Users/bakra/Desktop/ESP32-C3-DEVKIT-C02/simple/build/esp-idf/esp_https_server/CMakeFiles/list_install_components.dir
