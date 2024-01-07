@@ -27,6 +27,8 @@
 #include <esp_system.h>
 #include "nvs_flash.h"
 #include "esp_eth.h"
+
+
 #endif  // !CONFIG_IDF_TARGET_LINUX
 
 #define EXAMPLE_HTTP_QUERY_KEY_MAX_LEN  (64)
