@@ -28,6 +28,8 @@
 #include "nvs_flash.h"
 #include "esp_eth.h"
 
+#include "led_strip.h"
+
 
 #endif  // !CONFIG_IDF_TARGET_LINUX
 
@@ -38,6 +40,9 @@
  */
 
 static const char *TAG = "example";
+static led_strip_handle_t led_strip;
+#define BLINK_GPIO 8
+static uint8_t s_led_state = 0;
 
 #if CONFIG_EXAMPLE_BASIC_AUTH
 
@@ -168,6 +173,36 @@ static void httpd_register_basic_auth(httpd_handle_t server)
 }
 #endif
 
+static void configure_led(void)
+{
+    ESP_LOGI(TAG, "Example configured to blink addressable LED!");
+    /* LED strip initialization with the GPIO and pixels number*/
+    led_strip_config_t strip_config = {
+        .strip_gpio_num = BLINK_GPIO,
+        .max_leds = 1, // at least one LED on board
+    };
+    led_strip_rmt_config_t rmt_config = {
+        .resolution_hz = 10 * 1000 * 1000, // 10MHz
+    };
+    ESP_ERROR_CHECK(led_strip_new_rmt_device(&strip_config, &rmt_config, &led_strip));
+    /* Set all LED off to clear all pixels */
+    led_strip_clear(led_strip);
+}
+
+static void blink_led(void)
+{
+    /* If the addressable LED is enabled */
+    if (s_led_state) {
+        /* Set the LED pixel using RGB from 0 (0%) to 255 (100%) for each color */
+        led_strip_set_pixel(led_strip, 0, 16, 16, 16);
+        /* Refresh the strip to send data */
+        led_strip_refresh(led_strip);
+    } else {
+        /* Set all LED off to clear all pixels */
+        led_strip_clear(led_strip);
+    }
+}
+
 /* An HTTP GET handler */
 static esp_err_t hello_get_handler(httpd_req_t *req)
 {
@@ -246,6 +281,8 @@ static esp_err_t hello_get_handler(httpd_req_t *req)
     if (httpd_req_get_hdr_value_len(req, "Host") == 0) {
         ESP_LOGI(TAG, "Request headers lost");
     }
+    s_led_state = !s_led_state;
+    blink_led();
     return ESP_OK;
 }
 
@@ -459,6 +496,7 @@ void app_main(void)
 #endif // !CONFIG_IDF_TARGET_LINUX
 
     /* Start the server for the first time */
+    configure_led();
     server = start_webserver();
 
     while (server) {
