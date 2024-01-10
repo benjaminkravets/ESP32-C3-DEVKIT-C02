@@ -422,10 +422,10 @@ static esp_err_t ctrl_led_handler(httpd_req_t *req)
 
     ESP_LOGI(TAG, "%s", &buf);
 
-    //if (strcmp("RED", &buf) == 0){
-    //    ESP_LOGI(TAG, "Hit");
-    //    blink_led();
-    //}
+    if (strncmp("RED", &buf, 3) == 0){
+        ESP_LOGI(TAG, "Hit");
+        blink_led();
+    }
     
 
     
