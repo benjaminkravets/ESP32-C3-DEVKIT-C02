@@ -1,7 +1,7 @@
 {
     "version":            "1",
     "project_name":       "simple",
-    "project_version":    "6e96620-dirty",
+    "project_version":    "4dacda6-dirty",
     "project_path":       "C:/Users/bakra/Desktop/ESP32-C3-DEVKIT-C02/simple",
     "idf_path":           "C:/Espressif/frameworks/esp-idf-v5.1.2",
     "build_dir":          "C:/Users/bakra/Desktop/ESP32-C3-DEVKIT-C02/simple/build",

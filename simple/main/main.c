@@ -191,6 +191,8 @@ static void configure_led(void)
 
 static void blink_led(void)
 {
+    /*State flip*/
+    s_led_state = !s_led_state;
     /* If the addressable LED is enabled */
     if (s_led_state) {
         /* Set the LED pixel using RGB from 0 (0%) to 255 (100%) for each color */
@@ -281,7 +283,7 @@ static esp_err_t hello_get_handler(httpd_req_t *req)
     if (httpd_req_get_hdr_value_len(req, "Host") == 0) {
         ESP_LOGI(TAG, "Request headers lost");
     }
-    s_led_state = !s_led_state;
+
     blink_led();
     return ESP_OK;
 }
@@ -392,6 +394,8 @@ static esp_err_t ctrl_put_handler(httpd_req_t *req)
         httpd_register_err_handler(req->handle, HTTPD_404_NOT_FOUND, NULL);
     }
 
+    //blink_led();
+
     /* Respond with empty body */
     httpd_resp_send(req, NULL, 0);
     return ESP_OK;
@@ -401,6 +405,42 @@ static const httpd_uri_t ctrl = {
     .uri       = "/ctrl",
     .method    = HTTP_PUT,
     .handler   = ctrl_put_handler,
+    .user_ctx  = NULL
+};
+
+static esp_err_t ctrl_led_handler(httpd_req_t *req)
+{
+    char buf;
+    int ret;
+
+    if ((ret = httpd_req_recv(req, &buf, 3)) <= 0) {
+        if (ret == HTTPD_SOCK_ERR_TIMEOUT) {
+            httpd_resp_send_408(req);
+        }
+        return ESP_FAIL;
+    }
+
+    ESP_LOGI(TAG, "%s", &buf);
+
+    //if (strcmp("RED", &buf) == 0){
+    //    ESP_LOGI(TAG, "Hit");
+    //    blink_led();
+    //}
+    
+
+    
+
+    //blink_led();
+
+    /* Respond with empty body */
+    httpd_resp_send(req, NULL, 0);
+    return ESP_OK;
+}
+
+static const httpd_uri_t led = {
+    .uri       = "/led",
+    .method    = HTTP_PUT,
+    .handler   = ctrl_led_handler,
     .user_ctx  = NULL
 };
 
@@ -425,6 +465,7 @@ static httpd_handle_t start_webserver(void)
         httpd_register_uri_handler(server, &hello);
         httpd_register_uri_handler(server, &echo);
         httpd_register_uri_handler(server, &ctrl);
+        httpd_register_uri_handler(server, &led);
         #if CONFIG_EXAMPLE_BASIC_AUTH
         httpd_register_basic_auth(server);
         #endif
