@@ -189,20 +189,14 @@ static void configure_led(void)
     led_strip_clear(led_strip);
 }
 
-static void blink_led(void)
+static void set_led(uint32_t red, uint32_t green, uint32_t blue)
 {
-    /*State flip*/
-    s_led_state = !s_led_state;
-    /* If the addressable LED is enabled */
-    if (s_led_state) {
-        /* Set the LED pixel using RGB from 0 (0%) to 255 (100%) for each color */
-        led_strip_set_pixel(led_strip, 0, 16, 16, 16);
-        /* Refresh the strip to send data */
-        led_strip_refresh(led_strip);
-    } else {
-        /* Set all LED off to clear all pixels */
-        led_strip_clear(led_strip);
-    }
+
+    /* Set the LED pixel using RGB from 0 (0%) to 255 (100%) for each color */
+    led_strip_set_pixel(led_strip, 0, red, green, blue);
+    /* Refresh the strip to send data */
+    led_strip_refresh(led_strip);
+
 }
 
 /* An HTTP GET handler */
@@ -284,7 +278,6 @@ static esp_err_t hello_get_handler(httpd_req_t *req)
         ESP_LOGI(TAG, "Request headers lost");
     }
 
-    blink_led();
     return ESP_OK;
 }
 
@@ -394,7 +387,6 @@ static esp_err_t ctrl_put_handler(httpd_req_t *req)
         httpd_register_err_handler(req->handle, HTTPD_404_NOT_FOUND, NULL);
     }
 
-    //blink_led();
 
     /* Respond with empty body */
     httpd_resp_send(req, NULL, 0);
@@ -413,7 +405,7 @@ static esp_err_t ctrl_led_handler(httpd_req_t *req)
     char buf;
     int ret;
 
-    if ((ret = httpd_req_recv(req, &buf, 3)) <= 0) {
+    if ((ret = httpd_req_recv(req, &buf, 5)) <= 0) {
         if (ret == HTTPD_SOCK_ERR_TIMEOUT) {
             httpd_resp_send_408(req);
         }
@@ -424,13 +416,24 @@ static esp_err_t ctrl_led_handler(httpd_req_t *req)
 
     if (strncmp("RED", &buf, 3) == 0){
         ESP_LOGI(TAG, "Hit");
-        blink_led();
+        set_led(16, 0, 0);
     }
-    
-
-    
-
-    //blink_led();
+    else if (strncmp("GREEN", &buf, 5) == 0){
+        ESP_LOGI(TAG, "Hit");
+        set_led(0, 16, 0);
+    }
+    else if (strncmp("BLUE", &buf, 3) == 0){
+        ESP_LOGI(TAG, "Hit");
+        set_led(0, 0, 16);
+    }
+    else if (strncmp("WHITE", &buf, 3) == 0){
+        ESP_LOGI(TAG, "Hit");
+        set_led(16, 16, 16);
+    }
+    else if (strncmp("OFF", &buf, 3) == 0){
+        ESP_LOGI(TAG, "Hit");
+        led_strip_clear(led_strip);
+    }
 
     /* Respond with empty body */
     httpd_resp_send(req, NULL, 0);
