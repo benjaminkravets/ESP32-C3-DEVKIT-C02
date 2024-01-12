@@ -1,2 +1,4 @@
-curl -X PUT -d "0" 192.168.1.176:80/ctrl
-curl 192.168.1.176:80/hello; echo
+curl -X PUT -d "BLUE" 192.168.1.176:80/led; echo
+curl -X PUT -d "GREEN" 192.168.1.176:80/led; echo
+curl -X PUT -d "RED" 192.168.1.176:80/led; echo
+curl -X PUT -d "OFF" 192.168.1.176:80/led; echo
