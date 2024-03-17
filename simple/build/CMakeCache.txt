@@ -292,6 +292,9 @@ ENABLE_PROGRAMS:BOOL=
 //Build Mbed TLS tests.
 ENABLE_TESTING:BOOL=
 
+//No help, variable specified on the command line.
+ESP_PLATFORM:UNINITIALIZED=1
+
 //Generate the auto-generated files as needed
 GEN_FILES:BOOL=
 
@@ -330,6 +333,15 @@ Mbed TLS_IS_TOP_LEVEL:STATIC=OFF
 
 //Value Computed by CMake
 Mbed TLS_SOURCE_DIR:STATIC=C:/Espressif/frameworks/esp-idf-v5.1.2/components/mbedtls/mbedtls
+
+//No help, variable specified on the command line.
+PYTHON:UNINITIALIZED=C:\Espressif\python_env\idf5.1_py3.11_env\Scripts\python.exe
+
+//No help, variable specified on the command line.
+PYTHON_DEPS_CHECKED:UNINITIALIZED=1
+
+//No help, variable specified on the command line.
+SDKCONFIG:UNINITIALIZED=sdkconfig
 
 //Allow unsafe builds. These builds ARE NOT SECURE.
 UNSAFE_BUILD:BOOL=OFF
@@ -563,7 +575,7 @@ C_COMPILER_SUPPORTS_WFORMAT_SIGNEDNESS:INTERNAL=1
 //Details about finding Git
 FIND_PACKAGE_MESSAGE_DETAILS_Git:INTERNAL=[C:/Program Files/Git/cmd/git.exe][v2.39.2.windows.1()]
 //Details about finding Python3
-FIND_PACKAGE_MESSAGE_DETAILS_Python3:INTERNAL=[C:/Users/bakra/AppData/Local/Programs/Python/Python312/python.exe][cfound components: Interpreter ][v3.12.0()]
+FIND_PACKAGE_MESSAGE_DETAILS_Python3:INTERNAL=[C:/Espressif/python_env/idf5.1_py3.11_env/Scripts/python.exe][cfound components: Interpreter ][v3.11.2()]
 //ADVANCED property for variable: GIT_EXECUTABLE
 GIT_EXECUTABLE-ADVANCED:INTERNAL=1
 //Have include stddef.h
@@ -578,9 +590,8 @@ HAVE_TIME_T_SIZE:INTERNAL=TRUE
 TIME_T_SIZE:INTERNAL=8
 //CMAKE_INSTALL_PREFIX during last run
 _GNUInstallDirs_LAST_CMAKE_INSTALL_PREFIX:INTERNAL=C:/Program Files (x86)/simple
-//Path to a program.
-_Python3_EXECUTABLE:INTERNAL=C:/Users/bakra/AppData/Local/Programs/Python/Python312/python.exe
+_Python3_EXECUTABLE:INTERNAL=C:/Espressif/python_env/idf5.1_py3.11_env/Scripts/python.exe
 //Python3 Properties
-_Python3_INTERPRETER_PROPERTIES:INTERNAL=Python;3;12;0;32;;;C:\Users\bakra\AppData\Local\Programs\Python\Python312\Lib;C:\Users\bakra\AppData\Local\Programs\Python\Python312\Lib;C:\Users\bakra\AppData\Local\Programs\Python\Python312\Lib\site-packages;C:\Users\bakra\AppData\Local\Programs\Python\Python312\Lib\site-packages
-_Python3_INTERPRETER_SIGNATURE:INTERNAL=df68fa0118e9adf3039887597d46159f
+_Python3_INTERPRETER_PROPERTIES:INTERNAL=Python;3;11;2;32;;;C:\Espressif\tools\idf-python\3.11.2\Lib;C:\Espressif\tools\idf-python\3.11.2\Lib;C:\Espressif\python_env\idf5.1_py3.11_env\Lib\site-packages;C:\Espressif\python_env\idf5.1_py3.11_env\Lib\site-packages
+_Python3_INTERPRETER_SIGNATURE:INTERNAL=43d25c008fc153c153291f856a9aaacf
 

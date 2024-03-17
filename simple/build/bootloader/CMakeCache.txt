@@ -248,7 +248,7 @@ IDF_TOOLCHAIN:STRING=gcc
 PROJECT_SOURCE_DIR:UNINITIALIZED=C:/Users/bakra/Desktop/ESP32-C3-DEVKIT-C02/simple
 
 //No help, variable specified on the command line.
-PYTHON:UNINITIALIZED=python
+PYTHON:UNINITIALIZED=C:/Espressif/python_env/idf5.1_py3.11_env/Scripts/python.exe
 
 //No help, variable specified on the command line.
 PYTHON_DEPS_CHECKED:UNINITIALIZED=1
