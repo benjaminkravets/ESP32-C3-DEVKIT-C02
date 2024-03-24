@@ -10,6 +10,7 @@
 #include "freertos/queue.h"
 #include "driver/gptimer.h"
 #include "esp_log.h"
+#include "led_strip.h"
 
 static const char *TAG = "example";
 
@@ -17,33 +18,10 @@ typedef struct {
     uint64_t event_count;
 } example_queue_element_t;
 
-static bool IRAM_ATTR example_timer_on_alarm_cb_v1(gptimer_handle_t timer, const gptimer_alarm_event_data_t *edata, void *user_data)
-{
-    BaseType_t high_task_awoken = pdFALSE;
-    QueueHandle_t queue = (QueueHandle_t)user_data;
-    // stop timer immediately
-    gptimer_stop(timer);
-    // Retrieve count value and send to queue
-    example_queue_element_t ele = {
-        .event_count = edata->count_value
-    };
-    xQueueSendFromISR(queue, &ele, &high_task_awoken);
-    // return whether we need to yield at the end of ISR
-    return (high_task_awoken == pdTRUE);
-}
 
-static bool IRAM_ATTR example_timer_on_alarm_cb_v2(gptimer_handle_t timer, const gptimer_alarm_event_data_t *edata, void *user_data)
-{
-    BaseType_t high_task_awoken = pdFALSE;
-    QueueHandle_t queue = (QueueHandle_t)user_data;
-    // Retrieve count value and send to queue
-    example_queue_element_t ele = {
-        .event_count = edata->count_value
-    };
-    xQueueSendFromISR(queue, &ele, &high_task_awoken);
-    // return whether we need to yield at the end of ISR
-    return (high_task_awoken == pdTRUE);
-}
+uint64_t sequence; //countdown in sequence
+uint64_t cycle_len; //starting cycle len
+uint64_t accel_increment; //cycle increment
 
 static bool IRAM_ATTR example_timer_on_alarm_cb_v3(gptimer_handle_t timer, const gptimer_alarm_event_data_t *edata, void *user_data)
 {
@@ -54,10 +32,21 @@ static bool IRAM_ATTR example_timer_on_alarm_cb_v3(gptimer_handle_t timer, const
         .event_count = edata->count_value
     };
     xQueueSendFromISR(queue, &ele, &high_task_awoken);
+
+    // Calculate alarm increment value
+    if (cycle_len > 50){
+        cycle_len -= 10;
+    }
+    if (sequence > 0){
+        sequence -= 1;
+    }
+
+
     // reconfigure alarm value
     gptimer_alarm_config_t alarm_config = {
-        .alarm_count = edata->alarm_value + 1000000, // alarm in next 1s
+        .alarm_count = edata->alarm_value + cycle_len, // alarm in next 1s
     };
+    //ESP_LOGI(TAG, "Timer alarmed, count=%llu", alarm_config.alarm_count);
     gptimer_set_alarm_action(timer, &alarm_config);
     // return whether we need to yield at the end of ISR
     return (high_task_awoken == pdTRUE);
@@ -65,6 +54,9 @@ static bool IRAM_ATTR example_timer_on_alarm_cb_v3(gptimer_handle_t timer, const
 
 void app_main(void)
 {
+	cycle_len = 250;
+	sequence = 1000;
+
     example_queue_element_t ele;
     QueueHandle_t queue = xQueueCreate(10, sizeof(example_queue_element_t));
     if (!queue) {
@@ -82,64 +74,9 @@ void app_main(void)
     ESP_ERROR_CHECK(gptimer_new_timer(&timer_config, &gptimer));
 
     gptimer_event_callbacks_t cbs = {
-        .on_alarm = example_timer_on_alarm_cb_v1,
+        .on_alarm = example_timer_on_alarm_cb_v3,
     };
-    ESP_ERROR_CHECK(gptimer_register_event_callbacks(gptimer, &cbs, queue));
 
-    ESP_LOGI(TAG, "Enable timer");
-    ESP_ERROR_CHECK(gptimer_enable(gptimer));
-
-    ESP_LOGI(TAG, "Start timer, stop it at alarm event");
-    gptimer_alarm_config_t alarm_config1 = {
-        .alarm_count = 1000000, // period = 1s
-    };
-    ESP_ERROR_CHECK(gptimer_set_alarm_action(gptimer, &alarm_config1));
-    ESP_ERROR_CHECK(gptimer_start(gptimer));
-    if (xQueueReceive(queue, &ele, pdMS_TO_TICKS(2000))) {
-        ESP_LOGI(TAG, "Timer stopped, count=%llu", ele.event_count);
-    } else {
-        ESP_LOGW(TAG, "Missed one count event");
-    }
-
-    ESP_LOGI(TAG, "Set count value");
-    ESP_ERROR_CHECK(gptimer_set_raw_count(gptimer, 100));
-    ESP_LOGI(TAG, "Get count value");
-    uint64_t count;
-    ESP_ERROR_CHECK(gptimer_get_raw_count(gptimer, &count));
-    ESP_LOGI(TAG, "Timer count value=%llu", count);
-
-    // before updating the alarm callback, we should make sure the timer is not in the enable state
-    ESP_LOGI(TAG, "Disable timer");
-    ESP_ERROR_CHECK(gptimer_disable(gptimer));
-    // set a new callback function
-    cbs.on_alarm = example_timer_on_alarm_cb_v2;
-    ESP_ERROR_CHECK(gptimer_register_event_callbacks(gptimer, &cbs, queue));
-    ESP_LOGI(TAG, "Enable timer");
-    ESP_ERROR_CHECK(gptimer_enable(gptimer));
-
-    ESP_LOGI(TAG, "Start timer, auto-reload at alarm event");
-    gptimer_alarm_config_t alarm_config2 = {
-        .reload_count = 0,
-        .alarm_count = 1000000, // period = 1s
-        .flags.auto_reload_on_alarm = true,
-    };
-    ESP_ERROR_CHECK(gptimer_set_alarm_action(gptimer, &alarm_config2));
-    ESP_ERROR_CHECK(gptimer_start(gptimer));
-    int record = 4;
-    while (record) {
-        if (xQueueReceive(queue, &ele, pdMS_TO_TICKS(2000))) {
-            ESP_LOGI(TAG, "Timer reloaded, count=%llu", ele.event_count);
-            record--;
-        } else {
-            ESP_LOGW(TAG, "Missed one count event");
-        }
-    }
-    ESP_LOGI(TAG, "Stop timer");
-    ESP_ERROR_CHECK(gptimer_stop(gptimer));
-
-    ESP_LOGI(TAG, "Disable timer");
-    ESP_ERROR_CHECK(gptimer_disable(gptimer));
-    cbs.on_alarm = example_timer_on_alarm_cb_v3;
     ESP_ERROR_CHECK(gptimer_register_event_callbacks(gptimer, &cbs, queue));
     ESP_LOGI(TAG, "Enable timer");
     ESP_ERROR_CHECK(gptimer_enable(gptimer));
@@ -150,14 +87,9 @@ void app_main(void)
     };
     ESP_ERROR_CHECK(gptimer_set_alarm_action(gptimer, &alarm_config3));
     ESP_ERROR_CHECK(gptimer_start(gptimer));
-    record = 4;
-    while (record) {
-        if (xQueueReceive(queue, &ele, pdMS_TO_TICKS(2000))) {
-            ESP_LOGI(TAG, "Timer alarmed, count=%llu", ele.event_count);
-            record--;
-        } else {
-            ESP_LOGW(TAG, "Missed one count event");
-        }
+    int record = 1000;
+    while (sequence) {
+    	ESP_LOGI(TAG, "Timer alarmed, count=%llu sequ=%llu", cycle_len, sequence);
     }
 
     ESP_LOGI(TAG, "Stop timer");
