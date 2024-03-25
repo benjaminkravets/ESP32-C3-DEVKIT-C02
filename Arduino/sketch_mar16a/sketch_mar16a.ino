@@ -1,31 +1,89 @@
-#include <AccelStepper.h>
+/*
+ * This ESP32 code is created by esp32io.com
+ *
+ * This ESP32 code is released in the public domain
+ *
+ * For more detail (instruction and wiring diagram), visit https://esp32io.com/tutorials/esp32-controls-led-via-web
+ */
 
-// define step constant
-#define FULLSTEP 4
-#define STEP_PER_REVOLUTION 2048 // this value is from datasheet
+#include <WiFi.h>
+#include <ESPAsyncWebServer.h>
 
-// Pins entered in sequence IN1-IN3-IN2-IN4 for proper step sequence
-AccelStepper stepper(FULLSTEP, 0, 1, 2, 3); // ESP32 pin: GPIO19, GPIO18, GPIO17, GPIO16
+#define LED_PIN 18  // ESP32 pin GPIO18 connected to LED
+
+const char *ssid = "beesechurger";     // CHANGE IT
+const char *password = "livelygiant376";  // CHANGE IT
+
+AsyncWebServer server(80);
+
+int LED_state = LOW;
+
+String getHTML() {
+  String html = "<!DOCTYPE HTML>";
+  html += "<html>";
+  html += "<head>";
+  html += "<link rel='icon' href='data:,'>";
+  html += "</head>";
+  html += "<p>LED state: <span style='color: red;'>";
+
+  if (LED_state == LOW)
+    html += "OFF";
+  else
+    html += "ON";
+
+  html += "</span></p>";
+  html += "<a href='/led1/on'>Turn ON</a>";
+  html += "<br><br>";
+  html += "<a href='/led1/off'>Turn OFF</a>";
+  html += "</html>";
+
+  return html;
+}
 
 void setup() {
-  //Serial.begin(9600);
-  stepper.setMaxSpeed(1000.0);   // set the maximum speed
-  stepper.setAcceleration(50.0); // set acceleration
-  stepper.setSpeed(1000);         // set initial speed
-  stepper.setCurrentPosition(0); // set position
-  stepper.moveTo(STEP_PER_REVOLUTION); // set target position: 64 steps <=> one revolution
+  Serial.begin(9600);
+  pinMode(LED_PIN, OUTPUT);
+  digitalWrite(LED_PIN, LED_state);
+
+  // Connect to Wi-Fi
+  WiFi.begin(ssid, password);
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(1000);
+    Serial.println("Connecting to WiFi...");
+  }
+  Serial.println("Connected to WiFi");
+
+  // Print the ESP32's IP address
+  Serial.print("ESP32 Web Server's IP address: ");
+  Serial.println(WiFi.localIP());
+
+  // home page
+  server.on("/", HTTP_GET, [](AsyncWebServerRequest *request) {
+    Serial.println("ESP32 Web Server: New request received:");
+    Serial.println("GET /");
+    request->send(200, "text/html", getHTML());
+  });
+
+  // Route to control the LED
+  server.on("/led1/on", HTTP_GET, [](AsyncWebServerRequest *request) {
+    Serial.println("ESP32 Web Server: New request received:");
+    Serial.println("GET /led1/on");
+    LED_state = HIGH;
+    digitalWrite(LED_PIN, LED_state);
+    request->send(200, "text/html", getHTML());
+  });
+  server.on("/led1/off", HTTP_GET, [](AsyncWebServerRequest *request) {
+    Serial.println("ESP32 Web Server: New request received:");
+    Serial.println("GET /led1/off");
+    LED_state = LOW;
+    digitalWrite(LED_PIN, LED_state);
+    request->send(200, "text/html", getHTML());
+  });
+
+  // Start the server
+  server.begin();
 }
 
 void loop() {
-  // change direction once the motor reaches target position
-  if (stepper.distanceToGo() == 0)
-    stepper.moveTo(-stepper.currentPosition());
-
-  stepper.run(); // MUST be called in loop() function
-  
-  Serial.print(F("Current Position: "));
-  Serial.println(stepper.currentPosition());
+  // Your code here
 }
-
-
-
