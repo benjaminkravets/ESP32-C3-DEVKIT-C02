@@ -11,8 +11,8 @@
 
 #define LED_PIN 18  // ESP32 pin GPIO18 connected to LED
 
-const char *ssid = "beesechurger";     // CHANGE IT
-const char *password = "livelygiant376";  // CHANGE IT
+const char *ssid = "Verizon_YD3BVC";     // CHANGE IT
+const char *password = "herd-ace9-broke";  // CHANGE IT
 
 AsyncWebServer server(80);
 
