@@ -3,7 +3,7 @@
 #include <WiFi.h>
 #include <ESPAsyncWebServer.h>
 
-#define LED_PIN 0  // ESP32 pin GPIO18 connected to LED
+#define LED_PIN 18  // ESP32 pin GPIO18 connected to LED
 
 const char *ssid = "Verizon_YD3BVC";     // CHANGE IT
 const char *password = "herd-ace9-broke";  // CHANGE IT
