@@ -23,7 +23,7 @@ String getHTML() {
 void setup() {
     //Set up serial connection and LED pin
     Serial.begin(9600);
-    pinMode(LED_INDICATOR_PIN, LED_state);
+    pinMode(LED_INDICATOR_PIN, OUTPUT);
     digitalWrite(LED_INDICATOR_PIN, LED_state);
 
     //Network Connection
@@ -38,11 +38,33 @@ void setup() {
     Serial.println(WiFi.localIP());
     Serial.println(WiFi.SSID());
 
-    server.on("/", HTTP_GET, [](AsyncWebServerRequest* request){
+    String html = "";
+    html = "ON";
+
+
+
+    server.on("/led1/status", HTTP_GET, [](AsyncWebServerRequest* request){
                               Serial.println("Request Received:");
                               Serial.println("GET /");
-                              request->send(200, "text/html", getHTML());
+                              request->send(200, "text/html", html);
     });
+
+    
+    server.on("/led1/on", HTTP_GET, [](AsyncWebServerRequest *request){
+      Serial.println("Request GET /led1/on");
+      LED_state = HIGH;
+      digitalWrite(LED_INDICATOR_PIN, LED_state);
+      request->send(200, "text/html", "ON");
+    });
+
+    server.on("/led1/off", HTTP_GET, [](AsyncWebServerRequest *request){
+      Serial.println("Request GET /led1/off");
+      LED_state = LOW;
+      digitalWrite(LED_INDICATOR_PIN, LED_state);
+      request->send(200, "text/html", "OFF");
+    });
+
+    server.begin();
 
 }
 
