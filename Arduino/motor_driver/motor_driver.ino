@@ -18,7 +18,7 @@ AccelStepper stepper(FULLSTEP, 3, 1, 2, 0); // ESP32 pin: GPIO19, GPIO18, GPIO17
 
 void setup() {
   Serial.begin(9600);
-  stepper.setMaxSpeed(1000.0);   // set the maximum speed
+  stepper.setMaxSpeed(200.0);   // set the maximum speed
   stepper.setAcceleration(50.0); // set acceleration
   stepper.setSpeed(200);         // set initial speed
   stepper.setCurrentPosition(0); // set position
@@ -28,13 +28,14 @@ void setup() {
 void loop() {
   // change direction once the motor reaches target position
   if (stepper.distanceToGo() == 0)
-    stepper.moveTo(-stepper.currentPosition());
+  stepper.moveTo(-stepper.currentPosition());
 
   stepper.run(); // MUST be called in loop() function
-
+  
+  
   if (stepper.currentPosition() % 100 == 0){
     Serial.print(F("Current Position: "));
     Serial.println(stepper.currentPosition());
   }
-
+  
 }
