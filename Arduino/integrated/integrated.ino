@@ -6,8 +6,8 @@
 #define INTERFACE 4 // number of pins for servo motor
 #define STEPS_PER_REV 2048
 
-const char* ssid = "Verizon_YD3BVC"; 
-const char* password = "herd-ace9-broke";
+const char* ssid = "beesechurger"; 
+const char* password = "livelygiant376";
 
 AsyncWebServer server(80);
 AccelStepper stepper(INTERFACE, 3, 1, 2, 0);
@@ -17,9 +17,9 @@ int stepper_position = LOW;
 void setup() {
     //Set up serial connection and LED pin
     Serial.begin(9600);
-    stepper.setMaxSpeed(200.0);
+    stepper.setMaxSpeed(400.0);
     stepper.setAcceleration(50.0);
-    stepper.setSpeed(200);
+    stepper.setSpeed(400);
     stepper.setCurrentPosition(0);
     
     //Set up pins
@@ -47,8 +47,8 @@ void setup() {
 
     // assign response for state uri, move to high state, return status
     server.on("/servo/high", HTTP_GET, [](AsyncWebServerRequest *request){
-      Serial.println("Request GET /led1/on");
-      stepper.moveTo(STEPS_PER_REV * 3.5); // move 3.5 revolutions (needed steps = steps per revolution * revolutions)
+      Serial.println("Request GET /servo/high");
+      stepper.moveTo(STEPS_PER_REV * 4.0); // move 4.0 revolutions (needed steps = steps per revolution * revolutions)
       stepper_position = HIGH;
       digitalWrite(LED_INDICATOR_PIN, stepper_position);
       request->send(200, "text/html", "HIGH");
@@ -56,8 +56,8 @@ void setup() {
 
     // assign response for state uri, move to low state, return status
     server.on("/servo/low", HTTP_GET, [](AsyncWebServerRequest *request){
-      Serial.println("Request GET /led1/off");
-      stepper.moveTo(0); // move back from high (will move back 3.5 revolutions)
+      Serial.println("Request GET /servo/low");
+      stepper.moveTo(0); // move back from high (will move back 4.0 revolutions)
       stepper_position = LOW;
       digitalWrite(LED_INDICATOR_PIN, stepper_position);
       request->send(200, "text/html", "LOW");
